@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video-Soru</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            /* background: #b61212; */
+        }
+
+        .app {
+    background-color: #fff;
+    width: 50%;
+    min-height: 50%; /* Değişiklik burada */
+    margin: 0 auto;
+    border:2px solid rgb(92, 58, 248);
+    border-radius: 10px;
+    padding: 30px;
+}
+
+.alan {
+    background-color: #ffffff;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 800px;
+            height: 600px;
+        margin: 0 auto;
+   /* Değişiklik burada */
+    overflow: hidden; /* Bu satırı kaldırabilirsiniz */
+}
+
+
+        .app h1 {
+            font-size: 25px;
+            color: #001e4d;
+            font-weight: 600;
+            border-bottom: 1px solid #333;
+            padding-bottom: 30px;
+        }
+
+        .quiz {
+            padding: 20px 0;
+        }
+
+        .quiz h2 {
+            font-size: 18px;
+            text-align:justify;
+            color: #001e4d;
+            font-weight: 600;
+        }
+
+        .butonlar {
+            display: flex;
+        
+            justify-content:space-between;
+            align-items:baseline;
+        }
+ 
+        img {
+           
+        width: 90%;
+            object-fit:cover;
+       
+
+
+
+        }
+
+        .btn {
+            position: relative;
+            box-shadow: 3px 4px 0px 0px #080808;
+	background:linear-gradient(to bottom, #79bbff 5%, #378de5 100%);
+	background-color:#353535;
+	border-radius:5px;
+	border:1px solid #337bc4;
+            font-weight: 500;
+            width: 100%;
+            border: 1px solid #222;
+            padding: 10px;
+            margin: 10px 0;
+            text-align: left;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover:not([disabled]) {
+            box-shadow: 3px 4px 0px 0px #313131;
+	background:linear-gradient(to bottom, #e7800a 5%, #f09c01 100%);
+	background-color:#79bbff;
+	border-radius:5px;
+	border:1px solid #337bc4;
+            color: white;
+        }
+
+        .btn:disabled {
+            cursor: no-drop;
+        }
+
+        #next-btn {
+            background: #ee7f00;
+            position: relative;
+            color: #fff;
+            font-family: 500;
+            width: 150px;
+            border: 0;
+            padding: 10px;
+            margin:5px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #video-btn {
+            background: #6c3dee;
+            position: relative;
+            color: #fff;
+            font-family: 500;
+            width: 150px;
+            border: 0;
+            padding: 10px;
+            margin: 20px auto 0;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+  
+        video{
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .correct {
+            background: #0adb65;
+            color: #ffffff;
+        }
+
+        .incorrect {
+            background: #f84141;
+            color: #ffffff;
+        }
+
+        #canvas-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        #canvas {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+   
+    border-radius: 5px;
+    height: 100%;
+   
+    background-color: rgba(15, 108, 247, 0.205);
+}
+        #color-picker {
+            margin: 10px 0;
+            position: relative;
+        }
+
+        #clear-button {
+            background: #ff5100;
+            color: #fff;
+            font-family: 500;
+            width: 75px;
+            height: 30px;
+            border: 0;
+            
+            position: relative;
+            text-align: center;
+
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .canvas-question {
+            display: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .araclar {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: nowrap;
+
+        }
+
+        #canvas-container {
+           
+          position: absolute;
+            width: 50%;
+            height: 55%;
+            top: 10%;
+            left: 25%;
+            
+            object-fit: contain;
+            overflow: hidden;
+        }
+
+        #toggle-canvas-button {
+            background-color: #001e4d;
+            border-radius: 5px;
+            color: aliceblue;
+
+        }
+        #answer-buttons{
+            text-align: center;
+           justify-content: center;
+           align-items: center;
+           background-color: #ffffffb0;
+           border-radius: 10px;
+        }
+        #answer-buttons button{
+            position: relative;
+            z-index: 55;
+           
+            text-align: center;
+        }
+        .beyaz{
+            width: 100%;
+            height: 100%;
+            background-color: transparent;
+            position: absolute;
+        }
+
+#line-width-input{
+   width: 40px;
+}
+#sonuc-gorseli{
+    object-fit: contain;
+    width: 200px;
+    height: 200px;
+}
+
+
+
+
+
+
+
+        @media screen and  (max-width:1200px){
+            .alan {
+    background-color: #ffffff;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+             height: 100%;
+        margin: 0 auto;
+   /* Değişiklik burada */
+    overflow: hidden; /* Bu satırı kaldırabilirsiniz */
+    
+}
+        }
+        @media screen and  (max-width:768px){
+            .alan {
+    background-color: #ffffff;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+             height: 100%;
+        margin: 0 auto;
+   /* Değişiklik burada */
+    overflow: hidden; /* Bu satırı kaldırabilirsiniz */
+    
+}
+}
+    
+   
+        
+    
+        @media screen and (max-width:768px)
+         {   #canvas-container {
+           
+           position: absolute;
+             width: 76%;
+             height: 50%;
+             top: 12%;
+             left: 12%;
+             
+             object-fit: contain;
+             overflow: hidden;
+         }
+            
+        }
+     
+        @media (max-width: 768px) {
+    .app {
+        width: 100%; /* Mobil cihazlarda genişliği tam ekran yapabilirsiniz */
+    }
+    .alan {
+        min-height: 50vh; /* Mobil cihazlarda alan yüksekliğini ayarlayabilirsiniz */
+    }
+    /* Diğer stil değişiklikleri */
+}
+    </style>
+</head>
+
+<body>
+    
+    <div class="app">
+        <div class="araclar">
+            <button id="clear-button">Temizle</button>
+            <input type="color" id="color-picker">
+            <input type="number" id="line-width-input" value="5">
+            <button id="toggle-canvas-button">   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
+              </svg></i>Kapat</button>
+        </div>
+    
+        <div class="quiz">
+            <div class="alan">
+                <h2 id="question">Question Goes Here</h2>
+            </div>
+            <div id="canvas-container">
+
+ 
+
+
+                <canvas id="canvas">
+                   
+                </canvas>
+            </div>
+            <div id="answer-buttons">
+                <button class="btn">Answer 01</button>
+                <button class="btn">Answer 02</button>
+                <button class="btn">Answer 03</button>
+                <button class="btn">Answer 04</button>
+                <button class="btn">Answer 05</button>
+            </div>
+
+            <div class="butonlar">
+                <button id="next-btn">İleri</button>
+                <button id="video-btn">Video</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: '<img src="11.png">',
+                answers: [
+                    { text: "A", correct: false },
+                    { text: "B", correct: true },
+                    { text: "C", correct: false },
+                    { text: "D", correct: false },
+                    { text: "E", correct: false },
+                ],
+                video: "En-Genel-tanıtım.mp4", // Her soru için bir video ekleyin
+            },
+            {
+                question: '<img src="2.png">',
+                answers: [
+                    { text: "A", correct: false },
+                    { text: "B", correct: true },
+                    { text: "C", correct: false },
+                    { text: "D", correct: false },
+                    { text: "E", correct: false },
+                ],
+                video: "En-Genel-tanıtım.mp4", // Her soru için bir video ekleyin
+            },
+            {
+                question: '<img src="3.png">',
+                answers: [
+                    { text: "A", correct: false },
+                    { text: "B", correct: true },
+                    { text: "C", correct: false },
+                    { text: "D", correct: false },
+                    { text: "E", correct: false },
+                ],
+                video: "En-Genel-tanıtım.mp4", // Her soru için bir video ekleyin
+            },
+            {
+                question: '<img src="4.png">',
+                answers: [
+                    { text: "A", correct: false },
+                    { text: "B", correct: true },
+                    { text: "C", correct: false },
+                    { text: "D", correct: false },
+                    { text: "E", correct: false },
+                ],
+                video: "En-Genel-tanıtım.mp4", // Her soru için bir video ekleyin
+            },
+            {
+                question: '<img src="5.png">',
+                answers: [
+                    { text: "A", correct: false },
+                    { text: "B", correct: true },
+                    { text: "C", correct: false },
+                    { text: "D", correct: false },
+                    { text: "E", correct: false },
+                ],
+                video: "En-Genel-tanıtım.mp4", // Her soru için bir video ekleyin
+            },
+            {
+                question: '<img src="6.png">',
+                answers: [
+                    { text: "A", correct: false },
+                    { text: "B", correct: true },
+                    { text: "C", correct: false },
+                    { text: "D", correct: false },
+                    { text: "E", correct: false },
+                ],
+                video: "En-Genel-tanıtım.mp4", // Her soru için bir video ekleyin
+            },
+            {
+                question: '<img src="7.png">',
+                answers: [
+                    { text: "A", correct: false },
+                    { text: "B", correct: true },
+                    { text: "C", correct: false },
+                    { text: "D", correct: false },
+                    { text: "E", correct: false },
+                ],
+                video: "En-Genel-tanıtım.mp4", // Her soru için bir video ekleyin
+            },
+            {
+                question: '<img src="8.png">',
+                answers: [
+                    { text: "A", correct: false },
+                    { text: "B", correct: true },
+                    { text: "C", correct: false },
+                    { text: "D", correct: false },
+                    { text: "E", correct: false },
+                ],
+                video: "En-Genel-tanıtım.mp4", // Her soru için bir video ekleyin
+            },
+            {
+                question: '<img src="9.png">',
+                answers: [
+                    { text: "A", correct: false },
+                    { text: "B", correct: true },
+                    { text: "C", correct: false },
+                    { text: "D", correct: false },
+                    { text: "E", correct: false },
+                ],
+                video: "En-Genel-tanıtım.mp4", // Her soru için bir video ekleyin
+            },
+            {
+                question: '<img src="10.png">',
+                answers: [
+                    { text: "A", correct: false },
+                    { text: "B", correct: true },
+                    { text: "C", correct: false },
+                    { text: "D", correct: false },
+                    { text: "E", correct: false },
+                ],
+                video: "En-Genel-tanıtım.mp4", // Her soru için bir video ekleyin
+            },
+            {
+                question: '<img src="11.png">',
+                answers: [
+                    { text: "A", correct: false },
+                    { text: "B", correct: true },
+                    { text: "C", correct: false },
+                    { text: "D", correct: false },
+                    { text: "E", correct: false },
+                ],
+                video: "En-Genel-tanıtım.mp4", // Her soru için bir video ekleyin
+            },
+            {
+                question: '<img src="12.png">',
+                answers: [
+                    { text: "A", correct: false },
+                    { text: "B", correct: true },
+                    { text: "C", correct: false },
+                    { text: "D", correct: false },
+                    { text: "E", correct: false },
+                ],
+                video: "En-Genel-tanıtım.mp4", // Her soru için bir video ekleyin
+            },
+           
+
+            // Diğer soruları da benzer şekilde düzenleyin
+        ];
+
+        const questionElement = document.getElementById("question");
+        const answerButtons = document.getElementById("answer-buttons");
+        const nextButton = document.getElementById("next-btn");
+        const videoButton = document.getElementById("video-btn");
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        const canvasContainer = document.getElementById("canvas-container");
+        const colorPicker = document.getElementById("color-picker");
+        const clearButton = document.getElementById("clear-button");
+        const canvasQuestions = document.querySelectorAll(".canvas-question");
+        const toggleCanvasButton = document.getElementById("toggle-canvas-button");  
+const lineWidthInput = document.getElementById("line-width-input");
+canvas.addEventListener("touchstart", startTouch);
+canvas.addEventListener("touchmove", moveTouch);
+canvas.addEventListener("touchend", endTouch);
+
+     
+
+
+let touchX, touchY;
+        let lineWidth = 5; // Varsayılan çizgi kalınlığı
+        canvas.style.cursor = "crosshair";
+
+        canvas.addEventListener("mousedown", () => {
+            drawing = true;
+        });
+
+        canvas.addEventListener("mouseup", () => {
+            drawing = false;
+            ctx.beginPath();
+        });
+
+        canvas.addEventListener("mousemove", draw);
+        
+        colorPicker.addEventListener("change", () => {
+            ctx.strokeStyle = colorPicker.value;
+        });
+
+        clearButton.addEventListener("click", () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+
+        function draw(e) {
+            if (!drawing) return;
+            ctx.lineCap = "round";
+
+            ctx.lineTo(e.clientX - canvas.getBoundingClientRect().left, e.clientY - canvas.getBoundingClientRect().top);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - canvas.getBoundingClientRect().left, e.clientY - canvas.getBoundingClientRect().top);
+        }
+        toggleCanvasButton.addEventListener("click", () => {
+    if (isDrawingEnabled) {
+        // Çizim kapatılıyor
+        isDrawingEnabled = false;
+        
+        toggleCanvasButton.innerHTML = '<i class="bi bi-pencil"></i> Kalemi Aç';
+        canvas.style.cursor = "default";
+        clearButton.disabled = true;
+        lineWidthInput.disabled = true; // Çizgi kalınlık ayarını devre dışı bırak
+    } else {
+        // Çizim açılıyor
+        isDrawingEnabled = true;
+        toggleCanvasButton.innerHTML = '<i class="bi bi-pencil"></i> Kalemi Kapat';
+        canvas.style.cursor = "crosshair";
+        clearButton.disabled = false;
+        lineWidthInput.disabled = false; // Çizgi kalınlık ayarını etkinleştir
+    }
+});
+
+lineWidthInput.addEventListener("input", (e) => {
+    // Çizgi kalınlığını kullanıcının girdiği değere ayarla
+    lineWidth = parseInt(e.target.value);
+    ctx.lineWidth = lineWidth;
+});
+
+        toggleCanvasButton.addEventListener("click", () => {
+            if (canvas.style.display === "none") {
+                canvas.style.display = "block";
+                clearButton.style.display = "block";
+                colorPicker.style.display = "block";
+                toggleCanvasButton.innerHTML = "Kapat";
+            } else {
+                canvas.style.display = "none";
+                
+                clearButton.style.display = "none";
+                colorPicker.style.display = "none";
+                toggleCanvasButton.innerHTML = "Aç";
+            }
+        });
+
+        canvas.width = 300;
+        canvas.height = 500;
+        let drawing = false;
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        const startQuiz = () => {
+            currentQuestionIndex = 0;
+            score = 0;
+            nextButton.innerHTML = "İleri";
+            showQuestion();
+
+        };
+
+
+        const showQuestion = () => {
+            resetState();
+            let currentQuestion = questions[currentQuestionIndex];
+            let questionNo = currentQuestionIndex + 1;
+            questionElement.innerHTML = questionNo + ". " + currentQuestion.question;
+
+            if (currentQuestionIndex < canvasQuestions.length) {
+                canvasQuestions[currentQuestionIndex].style.display = "block";
+            }
+
+            currentQuestion.answers.forEach((answer) => {
+                const button = document.createElement("button");
+                button.innerHTML = answer.text;
+                button.classList.add("btn");
+                answerButtons.appendChild(button);
+                if (answer.correct) {
+                    button.dataset.correct = answer.correct;
+                }
+                button.addEventListener("click", selectAnswer);
+            });
+        };
+
+        function startTouch(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    touchX = touch.clientX - canvas.getBoundingClientRect().left;
+    touchY = touch.clientY - canvas.getBoundingClientRect().top;
+    ctx.beginPath();
+    ctx.moveTo(touchX, touchY);
+}
+
+function moveTouch(e) {
+    e.preventDefault();
+    if (!touchX || !touchY) {
+        return;
+    }
+    const touch = e.touches[0];
+    const newX = touch.clientX - canvas.getBoundingClientRect().left;
+    const newY = touch.clientY - canvas.getBoundingClientRect().top;
+    ctx.lineTo(newX, newY);
+    ctx.stroke();
+    touchX = newX;
+    touchY = newY;
+}
+
+function endTouch(e) {
+    e.preventDefault();
+    touchX = null;
+    touchY = null;
+    ctx.closePath();
+}
+        function resetState() {
+            nextButton.style.display = "none";
+            while (answerButtons.firstChild) {
+                answerButtons.removeChild(answerButtons.firstChild);
+            }
+        }
+
+        function selectAnswer(e) {
+            const selectedBtn = e.target;
+            const isCorrect = selectedBtn.dataset.correct === "true";
+            if (isCorrect) {
+                selectedBtn.classList.add("correct");
+                score++;
+            } else {
+                selectedBtn.classList.add("incorrect");
+            }
+            Array.from(answerButtons.children).forEach((button) => {
+                if (button.dataset.correct === "true") {
+                    button.classList.add("correct");
+                }
+                button.disabled = true;
+            });
+            nextButton.style.display = "block";
+        }
+
+        function showScore() {
+            resetState();
+            canvasContainer.style.display = "none";
+            questionElement.innerHTML = `Soru ${questions.length} / Doğru ${score}  <img src="38.png" alt="Soru Görseli"id="sonuc-gorseli">`;
+            nextButton.innerHTML = "Yeniden";
+            nextButton.style.display = "block";
+        }
+        canvasContainer.style.display = "block";
+        const handleNextButton = () => {
+            if (currentQuestionIndex < canvasQuestions.length) {
+                canvasQuestions[currentQuestionIndex].style.display = "none";
+            }
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                showQuestion();
+            } else {
+                showScore();
+            }
+        };
+
+        nextButton.addEventListener("click", () => {
+            if (currentQuestionIndex < questions.length) {
+                handleNextButton();
+            } else {
+                startQuiz();
+                canvasContainer.style.display = "block";
+            }
+
+        });
+
+        lineWidthInput.addEventListener("input", (e) => {
+    // Çizgi kalınlığını kullanıcının girdiği değere ayarla
+    lineWidth = parseInt(e.target.value);
+    ctx.lineWidth = lineWidth;
+});
+
+        videoButton.addEventListener("click", () => {
+            const currentQuestion = questions[currentQuestionIndex];
+            const videoSource = currentQuestion.video;
+            const videoContainer = document.createElement("div");
+            videoContainer.innerHTML = `
+          <video width="320" height="240" controls>
+            <source src="${videoSource}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        `;
+            answerButtons.appendChild(videoContainer);
+        });
+
+        startQuiz();
+
+        // Çizim özelliği ekleniyor
+        canvas.addEventListener("mousedown", () => {
+            drawing = true;
+        });
+
+        canvas.addEventListener("mouseup", () => {
+            drawing = false;
+            ctx.beginPath();
+        });
+
+        canvas.addEventListener("mousemove", draw);
+
+        colorPicker.addEventListener("change", () => {
+            ctx.strokeStyle = colorPicker.value;
+        });
+
+        clearButton.addEventListener("click", () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+        
+  // Canvas boyutunu otomatik olarak ayarlayan fonksiyon
+function resizeCanvas() {
+    canvas.width = canvasContainer.clientWidth;
+    canvas.height = canvasContainer.clientHeight;
+}
+
+// Sayfa yüklendiğinde ve pencere boyutu değiştiğinde canvas boyutunu güncelle
+window.addEventListener("load", resizeCanvas);
+window.addEventListener("resize", resizeCanvas);
+// Canvas boyutunu otomatik olarak ayarlayan fonksiyon
+function resizeCanvas() {
+    canvas.width = canvasContainer.clientWidth;
+    canvas.height = canvasContainer.clientHeight;
+}
+
+// Sayfa yüklendiğinde ve pencere boyutu değiştiğinde canvas boyutunu güncelle
+window.addEventListener("load", resizeCanvas);
+window.addEventListener("resize", resizeCanvas);
+    </script>
+
+</html>
